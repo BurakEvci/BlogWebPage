@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  bloggiewebdb:
+    container_name: app-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8002:1433
+    environment:
+      - ACCEPT_EULA=Y
+  bloggie.web:
+    container_name: bloggieweb
+    image: ${DOCKER_REGISTRY-}bloggieweb
+    build:
+      context: .
+      dockerfile: Bloggie.Web/Dockerfile
+    ports:
+      - 8001:443 
+    depends_on:
+      - bloggiewebdb
+    environment:
+      - DB_HOST=bloggiedb
+      - DB_NAME=BloggieDb  
